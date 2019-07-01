@@ -1,0 +1,131 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/index.css" />
+        <link rel="stylesheet" href="css/themes/app.css" />
+        <link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" /> 
+        <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script> 
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script type="text/javascript"> //function to insert officer names from db into dropdown list
+            $(document).ready(function () {
+                var url = "http://192.168.1.247/getNames.php"; //ip of local host over ethernet
+                $.getJSON(url, function (result) {
+                    $.each(result, function (i, field) {
+                        var name = field.name;
+                        $("#name").append("<option value='" + name + "'>" + name + "</option>");
+                    });
+                });
+            });
+        </script>
+        <script type="text/javascript"> //function to insert existing sites from db into dropdown list
+            $(document).ready(function () {
+                var url = "http://192.168.1.247/getSites.php"; //ip of local host over ethernet
+                $.getJSON(url, function (result) {
+                    $.each(result, function (i, field) {
+                        var siteName = field.siteName;
+                        $("#existingSite").append("<option value='" + siteName + "'>" + siteName + "</option>");
+                    });
+                });
+            });
+        </script>
+        <script type="text/javascript"> //function to check in
+            $(document).ready(function ()
+            {
+                $("#checkIn").click(function () {
+                    var action = "";
+                    if ($("#site").val() === "" && $("#existingSite option:selected").val()!=="Please enter the site if new") {
+                        var site = $("#existingSite option:selected").val();
+                        action = "not new";
+                    } else {
+                        var site = $("#site").val();
+                        action = "new";
+                    }
+                    var notes = $("#notes").val();
+                    var name = $("#name option:selected").val();
+                    var url = "http://192.168.1.247/checkIn.php";
+                    var dataString = "site=" + site + "&notes=" + notes + "&name=" + name + "&action=" + action;
+                    if ($.trim(site).length > 0 & $.trim(notes).length > 0 & $(name) !== "Please select your name")
+                    {
+                        $.ajax({
+                            type: "POST",
+                            url: url,
+                            data: dataString,
+                            crossDomain: true,
+                            cache: false,
+                            success: function (data) {
+                                if (data === "Success")
+                                {
+                                    $("#status").html('Checked in Successfully');
+                                    $("#site").val("");
+                                    $("#notes").vals("");
+                                } else if (data === "Error")
+                                {
+                                    alert("error");
+                                }
+                            }
+                        });
+                    }
+                    alert("There has been an error, please check your entry and try again");
+                });
+            });
+                    </script>   
+        <script type="text/javascript"> //function to check out
+            $(document).ready(function ()
+            {
+                $("#checkOut").click(function () {
+                    var site = $("#existingSite option:selected").val();
+                    console.log(site);
+                    var notes = $("#notes").val();
+                    console.log(notes);
+                    var name = $("#name option:selected").val();
+                    console.log(name);
+                    var url = "http://192.168.1.247/checkOut.php";
+                    var dataString = "site=" + site + "&notes=" + notes + "&name=" + name;
+                    console.log(dataString);
+                    if ($.trim(site).length > 0 & $.trim(notes).length > 0 & $(name) !== "Please select your name")
+                    {
+                        $.ajax({
+                            type: "POST",
+                            url: url,
+                            data: dataString,
+                            crossDomain: true,
+                            cache: false,
+                            success: function (data) {
+                                if (data === "Success")
+                                {
+                                    $("#status").html('Checked out Successfully');
+                                    $("#site").val("");
+                                    $("#notes").vals("");
+                                } else if (data === "Error")
+                                {
+                                    alert("error");
+                                }
+                            }
+                        });
+                    }
+                    return false;
+                });
+            });           
+        </script>
+        
+        <title>test</title>
+    </head>
+    <body>
+        <div class="app">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVgAAACSCAMAAAA3tiIUAAABTVBMVEX///8AAADgJyX/0QH7+/v39/f09PSBgYHv7+/29va4uLjs7Oy8vLxSUlLl5eVfX19nZ2cdHR2WlpbLy8uIiIgSEhJ2dnbOzs5NTU0tLS0YGBjaJiLktbjZ2dk4ODjDw8M9PT2jo6M0NDR7e3tISEgmJib47qncNRmPj4+mpqb3uQ7ncxbgSxpWVlZhYWGlpaX8xwzvihX66pj2rhDdLx7xpBb+1gLpo5X8wwzik4v68bTcKCrrrpjiUhjkJCP/zgD45Xv988P76ujqv7P41UHXX1HSGAXkPBLfe3DXVEr9++z75ob53mT13kfyxTTZQR/yzsjimH/002TehVn232jZMi/rjSDln3HqrqnaST7811X7++T7+NXjj0XkpoL45oD31zbokYPyx8PxwZv53qXdfHH46MjXaF70xFn229r2qgDfWRLxgCH745bcVRkJFCQGAAASX0lEQVR4nO2de3vbNpbGSYsiKVGiqAupWyhSEpVItuXYjaIm1oROnEx6STvJ7jTdZJKdznRnp9uNZ7//n4tzAPCim20pje0U7zNPa5EgCPxwcHBwYUeShISEhISEhISEhISEhISEhISEhISEft969+T2Fy8eP/7pxX89/fnX06suzeejd99lqE722pPX3/zy96en2asu0w2UsnDl/bPMlIENUbO3f35x/G5V8nVZ/Z715Kcn36avvH92glynh3vhDlE4C/emmWePOVuhC+n2NPPd7RSyd88iVwBcZ+EOgCX620IbJPWt8MYp3Z6eZKbPfrj95B325NNXT//6JwY2szcDsjvtHQqWJPyfh6+WZ3P65pc/fMpiX3/dZsim99qv37593W7vfLU7nSYsFkTBEu/wv8/bb79++utpynL1X299/Tp8/uVVVeF66jZDNr0H4xSY5/7uNLMK7D3wuu3Xf/zvh/84fvL+3fv3x8d/ePjL20k42WkLsClRsGS42m3Tjk/AZlaDJWMZ+V8YolnD1cP955MQLwqwKcVgQwpxthLslFpsGzBOwKyB7eF+OIMLAuycmCvITHfbYcjArnIFJ2Cx1K4nPJEAu0IcLHEFjOLL9a6A6k4Mll0RYNO6JNhwKVhhsYsSYH8jLQNLmU0F2G20HOzJ4eHhyeGFfawAu6gYbMTs7OzDPmoCQQJQi8HOBNgL6jabv065xYY73HS52jsfTuhKonAFF9c/HrDVV97L2xMKKtKMTFgfnd07RLBtAfaCurV/tHuStNjZDp8EcLDIrf3y7P7h9L4Ae1Hdmk3294g5TtmUNoSJfxJsbL2TDz8eLXcFOwLsgm61Ccb2nQ9HZ9wY24tIY9sNZyvBPhRbM0ndmh+qUiAX4bI7BCzV4f6Mwm4/vOqqXC+tAdsOwxVcCfAPe2dHRGd7EwZfgE1rncUSWivuEv/Rhn/ibQF2mdaADR+d7T36akIgzpbdpbFAZNMCbFprwE6OppkHu/eO9h5NomsJxGnaYSjApnQrmnAtEiNgpzAxY4sGEIYts12WgQi3UkKw4RzaGCyd7p7FdhnOpwzpDCIUYNNKuQL0m+0oWI3AHtG7M7bhtVQTca4gJQY2JHPW/Zcv9/dJGHVn1k6BPZnyCVc4Ofpwp512BzBrCCf7Z/f+ddVVuV7iFjt7eX93997ug8OTB484OQ42c8TShPuZw3s/7u1PUmh3Xu79uJvJfHHVVbleisDu05MCJBB4tOBjj/iVffg1PSShAmc72bu/e4hDnACb0q14vYqteC+CzaTAItvdCOx9tqArwKa1EdjMdPeOALte24PFczQC7LwuAna6ADYjwJ6nZWB5cCUsdgstgJ0++L+dGOzJdKnFpsEKH7tES8A+4jPXo+n0BM3xTIC9tJaBDduz16Af+da4sNjLaxHs4X+8efXrKeifx8cvXvyF0D0LBdjLanHwmj5J3P5Wevf++PF/sl2amRi8LqxX34RtXAiMDhlm3i+mOn3z9dvn4U57n8cJwmLP1enDNp4l2H/Ao9YlYCVJOX36x+fhV5lpZLFhDHYKS2ACbEoK6e5Pv/6mHUau4NmTVWlPv/xzZrnFnkynf1n52O9Zp6/e/Nu/f//99z88/uL4/brPD5/86xkJbk8yD+7MIouFzzx+OF7zlNA6Kfwf3x6/+O77P72c0E3aO/f/9t1Pt8VntpsrdYDo3ftXP7/5kujNz/9cZ+FCQkJCQkJCQkJCmyqnoK5Hjkp2+9Kom2TxG5zjL/Q1raZVPl6GyqhPMtRGm5RVyTu1Wm2zZ7m6WKHhJV9cDIgcNXEpN+yRS76jb1gOoy8TNTZ8epncMeR4kNvkWbOIz6rnp1z9eguykC/51F18KGVfWJagvnFBlCF5vrjx40tkQNWszf77cYYDz24DVsrWSBblyz5VQbKF5CVVk8eb2iuo/rHBSoXNwdJntwIrmZuAzbYAbMdMl2UrF1m9VmDzVwRWKssLPnETsIlhU4BFtRo9IJsc9TYAa/RjmxdgUbZVtcmDthdfujxYt1F2ox8CLMo+UPLoDWKTuzTYgi03Bdg52aWsBCFJ4u2XBdslJt/8JK5gg0D/SsEqDSBb45dSYN2uT+75tcgiPQ0mM3kSUFS1g0qBRoqyDVdrtW6OgVWkXIHk2tJYQKxUMAHFb2g8Lb9OUpld3+5UaAK3P2gVR3pcIAJHMvMBeY8Tdw2sdAWKVyrkKPQqL5xSrVlDT02DNQsODCh2scAu1PHlmg5/keslL+4WJLtcVetA3bWNwUr1QTKaTYIdNuVBpUvmPi2HmYuOMxFHUuiMJDeUE/J1brFmiV6x86w9wJPLVfqjC38HCM7DsGQkVXs0A+A2xBhQLqlRgcgPbGBswkTp8+TiGOcPBv5Wcd5nQSwOqifB6hXEhNkwx5LVmBessPIn865DDXo2vbEhWMmDhwfuPFiDzMK6+BJSph6fjUHh+3qnhcZC6LjNRVdQIO3vULaMrGvHYKURhHjUIk3IpVuTA6cEKZommfo1HJyKBgmwBKDTt9AArMgjkAYqwYsrtmyzAgAiRw3kWnEeLBQgIKnUUsJlY8WrgVx0DpppsiTvFiwyGEN7Q7A4CcemK82DLUZvgumUb8SFcRwCyRzHYNODly1bbk5SC2AjY8bBT4D1YrDQTvZArhhSLg9VIL3VM4h5QYG8GGyjSsqpoBVFxSPpy5QnKb5DFxM8Yu1WjbQmdJk02DIzHZeUxObdEy2qXNAlxT1IGBc2/Sh+/cZgVSturwisRpsYhZYQU2nRSvdXge3Sv6E9ZHcRbCEBFnx0j6apoZfB9stBgWpxamamWVyRoS1sDlh/IsRt3jMArE3/rs1bbJFVBlZIuGeD7A5Y3wlimG4rTrLp4JWLnmbtyMGSJo67hkt8YItywe7Tp28dLQfb4L0V+i6r/DqwrCVdyJk92o1rnAy3sKko8EpiLt7n/Q3AsqBEGbkpsA2eGF7TYPlRH0sF7ergdaWfMOrtwFJHhj2Bg+3HnZGYihU1s5fsMtJSsFG41Y/91gXAGlAGNmSBX2AokmAVyKYBJmsEiUAqz1sEwfLXSEmwuSjoAlI++5UEC92/iKVyiUE0jUTyLcAq6NWKuRisHddSor6gRwfyhEnCv9aBTXiQi4At0+EQ31JeClaCKKQF42iVJAg0qprF+QDYRmJNaVkca5Ca9Ri2JNhqVCroLkX+1JZgJQXd1zACi84hToie1eV/WYlYHZt3Bdju5cC24rasrgCb56MaZD3o9Doo3/dpEXDwSszSFsAqRgEqugxsPSqVlazitmAlE8Zw4vcZ2HwaLPo/dDteDIveWQP27nZgjSh1BKvAwdbkKJRLCMAmCzcH1shrZbm1wmJjsA05MbxsDRbm/MQITI/W824arCnzisyDNXu/mcUuAesxsIq2GmyiOyXBKq5GClH03HPBQln7yZpvB5ZOQKw8rSe4cjkuosktZSnYwacFC/kA2NFCfdaANcmbWjBpNteADSKwzkdzBSSahRjZDmg9veQ7qSug4fgysPYnAws/sBlhFNMWlmVWg4XpzAALsA4sLRVEtBGYjwCWxsisnir8dTe6hc2JJdwMLMZJPHrbAuyI1xniMT+1p4SFWwnWit5/PlhI2+GLQB8DLJuW03r6KYBQoVoUx25osfE6z8ZgwQPgBAHGzEVfsBosVIxmcr4rAJ9Y5msjHwUskmD1hDL1+EsVJ3KkG4KFIIfvAHkbg83CAItPZuHB1rzJLgULVcxCxdgs81yLhdA88jMfBywuGtB66uO4ypLbiQKQebAGrPjFBxHYeixVItwCU/MZzO4FwS7GsV7cPDgIjHmLGvlo5rXaYmmPgeGisxYsNlrZiy9vsJk4ntvzMDrx1L0VEyNv4qcNCnNgc9DJSTitqF5NX22xVcjNMXOqUcUVn2AFWHZ53mIpLIi1Le78cEmuPKwahlmt9A7w2tI4FqsIpWzWc1l9BAPJSotlEQSYbHlkqDmzW94EbGXRTZG5JDfTAsneh1Y2KrFt4LpTJ3lUBivoVLSxXVGkHCwPlNmgh4utLC1agdyxrMCWnVa0AoYr3GNaTYzwKogQl6zLowhOD5Z7lGpRTpwmMehae9kPOi221I1v78Q7o7i/MWBrS5DWchqyDzOhoRJd1ChMHZ5tsdC4gAvwvmX15KATleqiytLFwrlzL6N4B8E9IO7ooEbi6gFPRY9S8TpTfLhGTOyBFIrvHGBhC81kWoPdkoMCOlxZIyy6dLfAJ3GQXqO3wcBM+hZ5CG91LahlYDnkYrOSKG1OG7AsBxpaJX87Pwbnsm2HCrmrdFnSCt1fsEw6yYAOBjbDIiL6SmK+RVapYRY3SQ4uczqo6sAKRr+avqpU4hbPef1ir9kbx3ted/u47NGvJYYN1/E7frECaUb0ttYnZqrWeFpqkMboIOgEVoH88uBO35PMPktCql7V6N9OVVLyLBu6Z5arj5xip9n0rW56y0uqa8VOx+fFix5jhVPvOiwbvF+w/E4DSlnF1+SlOkvukA6WHfG0DIcxsoKgBMnrmKYgXVyKsvTwZ+q3opqmkVMWnkm5ZkU3DTV1GzPNzr8gp5t6NpEuTpJNP5rKBpRVDZM/my6ekSje/GNzv7OGmSxl+vbCK8k71VyqsEJCQkJCQp9AZFA1Nzpkf11kdvtOf+idn/DiUkaa49Ty2/1frJulwF9ctL0xUmtyY+TlrXgDbnuNZH/oFfqp/eBLqTqARUXXTp39vVkiE7gaLiAV/ctMT9aqIpcgL6Vmb/qdSZ+eaGjeYLBDftTeLV4OrFFddSfPt/X1YGWaczSycb+gud0XFVcpt8x3BpT6pVyBWeyvuGM0IhzVhU2Ci6qOTuQGg63Ey+FMumFQ083qqgoTVFVVs3AWBX4pBpv91suyRu7AVbgOaeMdw9acoaokS/ofisHE5ALONxV8gaIbcVdRdR1SktsYDtxcsHpp7tM/vTYY92RcBzGbPVi3ytaazRrB5ffKVTgwiEuR8O3DwO80h8Nmr1nJkgG8GS1GOtHRRqrcqNnwZTx0bJSasIomjQbNviqZQbM5go8HbRY+GN0BXbnK95p42PbmgjWb6c1Ss9isZnMVutE3oht4po+rz3lbLvkarPXBOVV3IPcN01TNDl1edgddnoef/kBKOZALuVxexoHMpEvIOQuHt3pTDgJn2GG7A0Yg5408+qYKPed4c8G6iVP2IJ8eo3DksYrbCQDWKCJYghKM26SnIdRBdGxwAI1Qj46hSXb6K4Y+TTik++9sbV5DsHoRT4HrAT6RbSBfs+jB+Gd/VmDzbHOlgEg9BraBYOsDCr0jj6UE2LqNqJz4OHX68xDyGJqjiQGUQsEqFCzJGTPR8HBJnp0G0NXPA2zSFRD3SBfzO/LBKrBj5BaBlbBXq814vCqnXEFX7uAAT6yT9ILlYCsAVuknKN54sOYgeepMPWBn45VA9i8KNi8P6tJoHOfSkxNTDYKQHixXHIhu14DVG3Lkpm8+WNVKhltqSe7RVY8APs64GFgzIEY/Tpxw0+RybL6EJztKr8Gu9TqwwedksVAnHiYZBpzOQcsjFutcFKxUk/1qLxFgefFBQsMkg1YLZyCEsIWuAPaASbdfAEsihfg/GHHzwbpN2aJ/6ZYLJwnotykDOALn0TBoKVg9Bkv8tJ+c0uvjaD3HyUPEi3B0H3s6O7GxxGLhn9EK280HCyxpxx21XEkv0w8/RhhuuT08P1Pv8HALh/cSjwo0mDvBlSJ42YQ8fh6vbuel7AH9ZKBOPydr4tBv0nkJGdAQcwXP8rotuVlX4BtE5XMAq9TkwUjPqt4Azh97pCo5pVrGkRw+P9FGWqeMcwAyQYBzdWoHP3dRLLl5N++gDefpAatYI1vumtlsvQhNQeYXmqmYHfqNOmlHazT0BxjAkpaDkzHZPvVHI/hys2Z1unjMM4+orY+25PbJpXhFOSg1BlYB6LikH1sD9tErHqEYVytwMshr2mW5ouiW3LJhnIdDMAN6xMQszx/OrltypzQeNPCTWlOTfatZokaN5y38fJ6QNU2fZOmoUs1u2T3oNvDBrdwpSErXbrUGBTcgN/ofb5X4kytneoW6kY1+eEZ0IMCtmllYeTFgqUQn/yJ/k39DE+helZ8H6y2YlWLUC57BT7mbVc/kSzTkh6viUk8uZ+iQMxk1Dbbwo7oe3IQXkvep9JW/Yc2vt5RAOz+R0OXlbbxPILROZtG60Vup11WFYMl3RUJby9Ws4Q0et6+vsmru9ztsCwkJCQkJCQkJCQkJCQldkf4fRQgI0ULaP8YAAAAASUVORK5CYII=" alt="NCC Logo">
+            <select id="name">
+                <option value="name">Please select your name</option>
+            </select>
+            <input type="text" placeholder="Please enter the site if new" id="site">
+            <select id="existingSite">
+                <option value="name" >or select existing site</option>
+            </select>
+            <textarea id="notes" placeholder="Please enter site notes here"></textarea>
+            <button id="checkIn">Check In</button>
+            <button id="checkOut">Check Out</button>
+            <div id="status"></div>
+        </div>
+    </body>
+</html>
