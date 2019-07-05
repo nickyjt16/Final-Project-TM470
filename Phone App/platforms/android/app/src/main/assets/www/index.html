@@ -35,7 +35,7 @@
             {
                 $("#checkIn").click(function () {
                     var action = "";
-                    if ($("#site").val() === "") {
+                    if ($("#site").val() === "" && $("#existingSite option:selected").val()!=="Please enter the site if new") {
                         var site = $("#existingSite option:selected").val();
                         action = "not new";
                     } else {
@@ -57,10 +57,9 @@
                             success: function (data) {
                                 if (data === "Success")
                                 {
-                                    alert("inserted");
                                     $("#status").html('Checked in Successfully');
-                                    $("#site").html("");
-                                    $("#notes").html("");
+                                    $("#site").val("");
+                                    $("#notes").vals("");
                                 } else if (data === "Error")
                                 {
                                     alert("error");
@@ -68,7 +67,7 @@
                             }
                         });
                     }
-                    return false;
+                    alert("There has been an error, please check your entry and try again");
                 });
             });
                     </script>   
@@ -96,8 +95,9 @@
                             success: function (data) {
                                 if (data === "Success")
                                 {
-                                    alert("inserted");
                                     $("#status").html('Checked out Successfully');
+                                    $("#site").val("");
+                                    $("#notes").vals("");
                                 } else if (data === "Error")
                                 {
                                     alert("error");
