@@ -10,17 +10,14 @@ $event="out";
 $sql = "INSERT INTO tbllogs (site, notes, officer, in_out)
 VALUES ('$site', '$notes', '$name', '$event')";
 
-$sql2 = "DELETE FROM tblsite 
-WHERE siteName = '$site'
-AND officerName = '$name'";
+$sql2 = "DELETE FROM tblcurrentvisits
+WHERE name='$name'";
 
-
-if ($con->query($sql) === TRUE) {
-	$con->query($sql2) === TRUE;	
+if (($con->query($sql) === TRUE) && ($con->query($sql2) === TRUE)) {	
 	echo "Success";
-} else {
+} 	else {
     echo "Error";
-}
+} 
 
 $con->close();
 ?>
