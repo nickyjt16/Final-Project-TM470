@@ -59,7 +59,7 @@
                                 {
                                     $("#status").html('Checked in Successfully');
                                     $("#site").val("");
-                                    $("#notes").vals("");
+                                    $("#notes").val("");
                                 } else if (data === "Error")
                                 {
                                     alert("error");
@@ -67,7 +67,6 @@
                             }
                         });
                     }
-                    alert("There has been an error, please check your entry and try again");
                 });
             });
                     </script>   
@@ -76,14 +75,10 @@
             {
                 $("#checkOut").click(function () {
                     var site = $("#existingSite option:selected").val();
-                    console.log(site);
                     var notes = $("#notes").val();
-                    console.log(notes);
                     var name = $("#name option:selected").val();
-                    console.log(name);
                     var url = "http://192.168.1.247/checkOut.php";
                     var dataString = "site=" + site + "&notes=" + notes + "&name=" + name;
-                    console.log(dataString);
                     if ($.trim(site).length > 0 & $.trim(notes).length > 0 & $(name) !== "Please select your name")
                     {
                         $.ajax({
