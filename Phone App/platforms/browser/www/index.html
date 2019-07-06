@@ -35,6 +35,7 @@
             {
                 $("#checkIn").click(function () {
                     var action = "";
+                    var notes = "";
                     if ($("#site").val() === "" && $("#existingSite option:selected").val()!=="Please enter the site if new") {
                         var site = $("#existingSite option:selected").val();
                         action = "not new";
@@ -42,7 +43,7 @@
                         var site = $("#site").val();
                         action = "new";
                     }
-                    var notes = $("#notes").val();
+                    notes = $("#notes").val();
                     var name = $("#name option:selected").val();
                     var url = "http://192.168.1.247/checkIn.php";
                     var dataString = "site=" + site + "&notes=" + notes + "&name=" + name + "&action=" + action;
@@ -66,6 +67,8 @@
                                 }
                             }
                         });
+                    } else {
+                        alert("Please make sure you have selected your name, entered a new or existing site, and entered any notes if required");
                     }
                 });
             });
@@ -79,7 +82,7 @@
                     var name = $("#name option:selected").val();
                     var url = "http://192.168.1.247/checkOut.php";
                     var dataString = "site=" + site + "&notes=" + notes + "&name=" + name;
-                    if ($.trim(site).length > 0 & $.trim(notes).length > 0 & $(name) !== "Please select your name")
+                    if ($(site) !== "existingSite" & $(name) !== "Please select your name")
                     {
                         $.ajax({
                             type: "POST",
@@ -92,7 +95,9 @@
                                 {
                                     $("#status").html('Checked out Successfully');
                                     $("#site").val("");
-                                    $("#notes").vals("");
+                                    $("#notes").val("");
+                                    $("#name").val("Please select your name");
+                                    $("#existingSite").val("Please select your name");
                                 } else if (data === "Error")
                                 {
                                     alert("error");
