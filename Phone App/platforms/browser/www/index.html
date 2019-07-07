@@ -47,7 +47,7 @@
                     var name = $("#name option:selected").val();
                     var url = "http://192.168.1.247/checkIn.php";
                     var dataString = "site=" + site + "&notes=" + notes + "&name=" + name + "&action=" + action;
-                    if ($.trim(site).length > 0 & $.trim(notes).length > 0 & $(name) !== "Please select your name")
+                    if ($.trim(site).length > 0 & $(name) !== "Please select your name")
                     {
                         $.ajax({
                             type: "POST",
