@@ -231,9 +231,9 @@ public class AddAnOfficer extends javax.swing.JFrame {
                 txtMobileNumber.setText("");
                 txtCarReg.setText("");
                 txtNextOfKin.setText("");
-                txtNextOfKinPhone.setText("");;
+                txtNextOfKinPhone.setText("");
                 cmboManager.setSelectedIndex(-1);
-                
+                con.close();
             }
         } catch (SQLException ex) {
             txtAddManagerOutcome.setText("There has been an error \n"
