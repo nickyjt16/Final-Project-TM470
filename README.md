@@ -1,4 +1,4 @@
-###TM470 FInal Project
+TM470 FInal Project
 
 This is my final project of the TM470 Open Universirt BSc.
 
