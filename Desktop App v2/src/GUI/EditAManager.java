@@ -204,17 +204,28 @@ public class EditAManager extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Return to the main menu when clicking return
+     * @param evt 
+     */
     private void btnReturnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReturnMouseClicked
         this.setVisible(false);
     }//GEN-LAST:event_btnReturnMouseClicked
 
+    /**
+     * Delete the selected manager and display an appropriate outcome message, before finally setting all the values to blank
+     * @param evt 
+     */
     private void btnDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseClicked
-        String id = txtId.getText();
+        if (cmboManagerName.getSelectedItem() == null) {
+            txtEditManagerOutcome.setText("Please select a manager before trying to delete");
+        } else {
+               String id = txtId.getText();
         String name = (String)cmboManagerName.getSelectedItem();
         try {
             this.deleteManager(id);
             txtEditManagerOutcome.setText((String)name + " has been deleted, you may now\n"
-                    + "add another manager or close this screen by clicking Return");
+                    + "edit/delete another manager or close this screen by clicking Return");
                 txtId.setText("");
                 cmboManagerName.setSelectedIndex(-1);
                 txtMobileNumber.setText("");
@@ -224,12 +235,39 @@ public class EditAManager extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(EditAManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+        }
     }//GEN-LAST:event_btnDeleteMouseClicked
 
+    /**
+     * Updates the selected manager with the details provided
+     * @param evt 
+     */
     private void btnUpdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnUpdateMouseClicked
-//TODO
+        if (cmboManagerName.getSelectedItem() == null) {
+            txtEditManagerOutcome.setText("Please select a manager before trying to update");
+        } else {
+        String id = txtId.getText();
+        String name = (String)cmboManagerName.getSelectedItem();
+        try {
+            this.updateManager(id);
+            txtEditManagerOutcome.setText((String)name + " has been updated, you may now\n"
+                    + "edit/delete another manager or close this screen by clicking Return");
+                txtId.setText("");
+                cmboManagerName.setSelectedIndex(-1);
+                txtMobileNumber.setText("");
+                txtCarReg.setText("");
+                txtNextOfKin.setText("");
+                txtNextOfKinPhone.setText("");
+        } catch (SQLException ex) {
+            Logger.getLogger(EditAManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }
     }//GEN-LAST:event_btnUpdateMouseClicked
 
+    /**
+     * Display the list of managers when clicking on the manager drop down menu
+     * @param evt 
+     */
     private void cmboManagerNameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmboManagerNameMouseClicked
         cmboManagerName.removeAllItems();
         List<String> managers = null;
@@ -243,6 +281,10 @@ public class EditAManager extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_cmboManagerNameMouseClicked
 
+    /**
+     * Load the current details for the selected manager
+     * @param evt 
+     */
     private void btnLoadMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoadMouseClicked
         if (cmboManagerName.getSelectedItem() == null) {
             txtEditManagerOutcome.setText("Please select a manager before clicking load");
@@ -264,6 +306,12 @@ public class EditAManager extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnLoadMouseClicked
 
+    /**
+     * Helper method for btnLoadMouseClicked
+     * @param name
+     * @return ResultSet of selected manager details
+     * @throws SQLException 
+     */
     public ResultSet getManagersDetails(String name) throws SQLException {
         DBConnect conn = new DBConnect();
         Connection openConn = conn.openConnection();
@@ -281,6 +329,11 @@ public class EditAManager extends javax.swing.JFrame {
         return null;
     }
 
+    /**
+     * Helper method for cmboManagerNameMouseClicked
+     * @return A list of all managers in tblmanagers
+     * @throws SQLException 
+     */
     private List<String> getManagers() throws SQLException {
         List<String> list = new ArrayList();
         DBConnect conn = new DBConnect();
@@ -301,12 +354,39 @@ public class EditAManager extends javax.swing.JFrame {
         return list;
     }
 
+    /**
+     * Helper method for btnDeleteMouseClicked, deletes the managers with the specified id.
+     * @param managerId
+     * @throws SQLException 
+     */
     public void deleteManager(String managerId) throws SQLException {
         DBConnect conn = new DBConnect();
         Connection openConn = conn.openConnection();
         PreparedStatement st = openConn.prepareStatement("DELETE FROM tblmanagers WHERE id = \"" + managerId + "\"");
         st.executeUpdate();
         
+    }
+    
+    /**
+     * Helper method for btnUpdateMouseClicked, updates all details for the specified manager
+     * @param managerId
+     * @throws SQLException 
+     */
+    public void updateManager (String managerId) throws SQLException {
+        String name = (String)cmboManagerName.getSelectedItem();
+        String id = txtId.getText();
+        String mobileNumber = txtMobileNumber.getText();
+        String carReg = txtCarReg.getText();
+        String nextOfKin = txtNextOfKin.getText();
+        String nextOfKinPhone = txtNextOfKinPhone.getText();
+        
+        DBConnect conn = new DBConnect();
+        Connection openConn = conn.openConnection();
+        PreparedStatement st = openConn.prepareStatement("UPDATE tblmanagers SET name = \"" + name + 
+                "\", mobileNumber = \"" + mobileNumber + "\", carReg = \"" + carReg + 
+                "\", nextOfKin = \"" + nextOfKin + "\", nextOfKinPhone = \"" + nextOfKinPhone +
+                "\" WHERE id = \"" + id + "\" ");
+        st.executeUpdate();
     }
 
     /**
