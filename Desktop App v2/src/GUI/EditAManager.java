@@ -6,11 +6,7 @@
 package GUI;
 
 import desktop.app.v2.DBConnect;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,20 +16,16 @@ import java.util.logging.Logger;
  *
  * @author zy395907
  */
-public class AddAnOfficer extends javax.swing.JFrame {
+public class EditAManager extends javax.swing.JFrame {
 
     /**
      * Creates new form AddAnOfficer
+     *
      * @throws java.sql.SQLException
      */
-    public AddAnOfficer() throws SQLException {
+    public EditAManager() throws SQLException {
         initComponents();
-        cmboManager.removeAllItems();
-        List<String> managers = this.getManagers();
-        managers.forEach((manager) -> {
-            cmboManager.addItem(manager);
-        }); 
-        
+
     }
 
     /**
@@ -50,9 +42,7 @@ public class AddAnOfficer extends javax.swing.JFrame {
         txtId = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtName = new javax.swing.JTextField();
         txtMobileNumber = new javax.swing.JTextField();
-        btnSave = new javax.swing.JButton();
         btnReturn = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -61,26 +51,23 @@ public class AddAnOfficer extends javax.swing.JFrame {
         txtNextOfKin = new javax.swing.JTextField();
         txtNextOfKinPhone = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        txtAddManagerOutcome = new javax.swing.JTextArea();
-        cmboManager = new javax.swing.JComboBox<>();
-        jLabel9 = new javax.swing.JLabel();
+        txtEditManagerOutcome = new javax.swing.JTextArea();
+        cmboManagerName = new javax.swing.JComboBox<>();
+        btnDelete = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        btnLoad = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Id Number:");
 
-        jLabel2.setText("Add an Officer");
+        jLabel2.setText("Edit A Manager");
+
+        txtId.setEditable(false);
 
         jLabel4.setText("Name:");
 
         jLabel5.setText("Work Mobile:");
-
-        btnSave.setText("Save");
-        btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSaveMouseClicked(evt);
-            }
-        });
 
         btnReturn.setText("Return");
         btnReturn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -98,14 +85,37 @@ public class AddAnOfficer extends javax.swing.JFrame {
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
-        txtAddManagerOutcome.setEditable(false);
-        txtAddManagerOutcome.setColumns(20);
-        txtAddManagerOutcome.setRows(5);
-        jScrollPane1.setViewportView(txtAddManagerOutcome);
+        txtEditManagerOutcome.setEditable(false);
+        txtEditManagerOutcome.setColumns(20);
+        txtEditManagerOutcome.setRows(5);
+        jScrollPane1.setViewportView(txtEditManagerOutcome);
 
-        cmboManager.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmboManagerName.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cmboManagerNameMouseClicked(evt);
+            }
+        });
 
-        jLabel9.setText("Manager:");
+        btnDelete.setText("Delete");
+        btnDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnDeleteMouseClicked(evt);
+            }
+        });
+
+        btnUpdate.setText("Update");
+        btnUpdate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnUpdateMouseClicked(evt);
+            }
+        });
+
+        btnLoad.setText("Load");
+        btnLoad.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnLoadMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -114,36 +124,42 @@ public class AddAnOfficer extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(176, 176, 176)
-                        .addComponent(jLabel2))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(58, 58, 58)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
+                        .addGap(21, 21, 21)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnReturn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel4)
                                     .addComponent(jLabel5)
                                     .addComponent(jLabel6)
                                     .addComponent(jLabel7)
-                                    .addComponent(jLabel8)
-                                    .addComponent(jLabel9))
+                                    .addComponent(jLabel8))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(cmboManager, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
-                                    .addComponent(txtMobileNumber)
+                                    .addComponent(txtMobileNumber, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
                                     .addComponent(txtCarReg)
                                     .addComponent(txtNextOfKin)
-                                    .addComponent(txtNextOfKinPhone))))))
-                .addContainerGap(33, Short.MAX_VALUE))
+                                    .addComponent(txtNextOfKinPhone)
+                                    .addComponent(cmboManagerName, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(176, 176, 176)
+                        .addComponent(jLabel2)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jScrollPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 172, Short.MAX_VALUE)
+                .addComponent(btnLoad)
+                .addContainerGap(173, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -157,7 +173,9 @@ public class AddAnOfficer extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmboManagerName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(3, 3, 3)
+                .addComponent(btnLoad, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -174,15 +192,12 @@ public class AddAnOfficer extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNextOfKinPhone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmboManager, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSave)
-                    .addComponent(btnReturn))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(btnReturn)
+                    .addComponent(btnDelete)
+                    .addComponent(btnUpdate))
+                .addGap(20, 20, 20)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -193,60 +208,82 @@ public class AddAnOfficer extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_btnReturnMouseClicked
 
-    private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
+    private void btnDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseClicked
+        String id = txtId.getText();
+        String name = (String)cmboManagerName.getSelectedItem();
         try {
-            String id;
-            String name;
-            String mobileNumber;
-            String carReg;
-            String nextOfKin;
-            String nextOfKinPhone;
-            String manager;
-                       
-            
-            id = txtId.getText();
-            name = txtName.getText();
-            mobileNumber = txtMobileNumber.getText();
-            carReg = txtCarReg.getText();
-            nextOfKin = txtNextOfKin.getText();
-            nextOfKinPhone = txtNextOfKinPhone.getText();
-            manager = (String)cmboManager.getSelectedItem();
-            DBConnect conn =  new DBConnect();
-            Connection openConn = conn.openConnection();
-            PreparedStatement st = openConn.prepareStatement("insert into tblofficers(id, name, mobileNumber, carReg, nextOfKin, nextOfKinPhone, manager) values (?,?,?,?,?,?,?)");
-            st.setString(1, id);
-            st.setString(2, name);
-            st.setString(3, mobileNumber);
-            st.setString(4, carReg);
-            st.setString(5, nextOfKin);
-            st.setString(6, nextOfKinPhone);
-            st.setString(7, manager);
-            int a = st.executeUpdate();
-            if (a>0)
-            {
-                txtAddManagerOutcome.setText((String)name + " has been added, you may \n"
-                    + "now close this screen by clicking Return");
+            this.deleteManager(id);
+            txtEditManagerOutcome.setText((String)name + " has been deleted, you may now\n"
+                    + "add another manager or close this screen by clicking Return");
                 txtId.setText("");
-                txtName.setText("");
+                cmboManagerName.setSelectedIndex(-1);
                 txtMobileNumber.setText("");
                 txtCarReg.setText("");
                 txtNextOfKin.setText("");
                 txtNextOfKinPhone.setText("");
-                cmboManager.setSelectedIndex(-1);
-                openConn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(EditAManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDeleteMouseClicked
+
+    private void btnUpdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnUpdateMouseClicked
+//TODO
+    }//GEN-LAST:event_btnUpdateMouseClicked
+
+    private void cmboManagerNameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmboManagerNameMouseClicked
+        cmboManagerName.removeAllItems();
+        List<String> managers = null;
+        try {
+            managers = this.getManagers();
+        } catch (SQLException ex) {
+            Logger.getLogger(EditAManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        managers.forEach((manager) -> {
+            cmboManagerName.addItem(manager);
+        });
+    }//GEN-LAST:event_cmboManagerNameMouseClicked
+
+    private void btnLoadMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoadMouseClicked
+        if (cmboManagerName.getSelectedItem() == null) {
+            txtEditManagerOutcome.setText("Please select a manager before clicking load");
+        } else {
+            String name = (String)cmboManagerName.getSelectedItem();
+       
+        try {
+            ResultSet results = getManagersDetails(name);
+            while (results.next()){
+            txtId.setText(results.getString(1));
+            txtMobileNumber.setText(results.getString(3));
+            txtCarReg.setText(results.getString(4));
+            txtNextOfKin.setText(results.getString(5));
+            txtNextOfKinPhone.setText(results.getString(6));
             }
         } catch (SQLException ex) {
-            txtAddManagerOutcome.setText("There has been an error. \n"
-                    + "Please make sure you have completed all fields and \n"
-                    + "try again");
-            Logger.getLogger(AddAnOfficer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EditAManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-    
-    }//GEN-LAST:event_btnSaveMouseClicked
+        }
+    }//GEN-LAST:event_btnLoadMouseClicked
+
+    public ResultSet getManagersDetails(String name) throws SQLException {
+        DBConnect conn = new DBConnect();
+        Connection openConn = conn.openConnection();
+        try {
+            Statement stmt = openConn.createStatement();
+            String query = "SELECT * FROM tblmanagers WHERE name = \"" + name + "\" ORDER BY name";
+            ResultSet results = stmt.executeQuery(query);
+            System.out.println(results);
+            return results;
+
+        } catch (SQLException e) {
+            System.out.println("Exception = " + e);
+        }
+        //System.out.println(list);
+        return null;
+    }
 
     private List<String> getManagers() throws SQLException {
         List<String> list = new ArrayList();
-        DBConnect conn =  new DBConnect();
+        DBConnect conn = new DBConnect();
         Connection openConn = conn.openConnection();
         try {
             Statement stmt = openConn.createStatement();
@@ -256,14 +293,22 @@ public class AddAnOfficer extends javax.swing.JFrame {
             while (results.next()) {
                 list.add(results.getString("name"));
             }
-            openConn.close();
+
         } catch (SQLException e) {
             System.out.println("Exception = " + e);
         }
+
         return list;
     }
 
-    
+    public void deleteManager(String managerId) throws SQLException {
+        DBConnect conn = new DBConnect();
+        Connection openConn = conn.openConnection();
+        PreparedStatement st = openConn.prepareStatement("DELETE FROM tblmanagers WHERE id = \"" + managerId + "\"");
+        st.executeUpdate();
+        
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -281,13 +326,13 @@ public class AddAnOfficer extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddAnOfficer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditAManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddAnOfficer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditAManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddAnOfficer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditAManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddAnOfficer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditAManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -299,22 +344,21 @@ public class AddAnOfficer extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    new AddAnOfficer().setVisible(true);
-                } catch (SQLException ex) {
-                    Logger.getLogger(AddAnOfficer.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new EditAManager().setVisible(true);
+            } catch (SQLException ex) {
+                Logger.getLogger(EditAManager.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnLoad;
     private javax.swing.JButton btnReturn;
-    private javax.swing.JButton btnSave;
-    private javax.swing.JComboBox<String> cmboManager;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JComboBox<String> cmboManagerName;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
@@ -322,13 +366,11 @@ public class AddAnOfficer extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea txtAddManagerOutcome;
     private javax.swing.JTextField txtCarReg;
+    private javax.swing.JTextArea txtEditManagerOutcome;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtMobileNumber;
-    private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtNextOfKin;
     private javax.swing.JTextField txtNextOfKinPhone;
     // End of variables declaration//GEN-END:variables
