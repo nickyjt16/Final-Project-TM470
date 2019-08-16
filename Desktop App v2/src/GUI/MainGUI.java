@@ -6,6 +6,7 @@
 package GUI;
 
 import desktop.app.v2.DBConnect;
+import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
@@ -21,6 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -42,19 +45,9 @@ public class MainGUI extends javax.swing.JFrame {
         timer.schedule(new RemindTask(),
                 0, //initial delay
                 20 * 1000);  //subsequent rate
-        try {                
-          image = ImageIO.read(new File("D://Downloads//download"));
-       } catch (IOException ex) {
-            System.out.println("There has been an error: " + ex);
-       }
-    }
+            }
         
-    protected void paintComponent(Graphics g) {
-        paintComponent(g);
-        g.drawImage(image, 0, 0, this); // see javadoc for more info on the parameters            
-    }
-    
-
+ 
     class RemindTask extends TimerTask {
 
 
@@ -226,10 +219,13 @@ public class MainGUI extends javax.swing.JFrame {
 //                    anOfficer.setTxtSite(results.getString(2));
 //                    anOfficer.setTxtTimestamp(results.getString(3));
 //                    jPanel4.add(anOfficer);
-//                    jPanel4.revalidate();
-//                    jPanel4.repaint();
-                    SiteEntry anOfficer = new SiteEntry();
-                    //frame0.getContentPane().add(anOfficer);
+
+                JPanel p = new JPanel();
+                jPanel4.setLayout( new BorderLayout());
+                JLabel label = new JLabel("Enter Text");
+                jPanel4.add(label);
+                
+
                 }
         } catch (SQLException ex) {
             Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
