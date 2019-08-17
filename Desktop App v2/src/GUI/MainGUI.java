@@ -116,6 +116,11 @@ public class MainGUI extends javax.swing.JFrame {
         });
 
         jButton4.setText("Edit or Delete an Officer");
+        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton4MouseClicked(evt);
+            }
+        });
 
         jButton5.setText("jButton1");
 
@@ -203,6 +208,15 @@ public class MainGUI extends javax.swing.JFrame {
             Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton2MouseClicked
+
+    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+        try {
+            EditAnOfficer anOfficer = new EditAnOfficer();
+            anOfficer.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton4MouseClicked
 
     private void showOfficerEntries() throws SQLException {
         DBConnect conn = new DBConnect();
