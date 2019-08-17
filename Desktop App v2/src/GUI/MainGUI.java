@@ -21,9 +21,11 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  *
@@ -33,6 +35,9 @@ public class MainGUI extends javax.swing.JFrame {
 
     Toolkit toolkit;
     Timer timer;
+    private javax.swing.JTextField jTxtTime;
+    private javax.swing.JTextField jTxtName;
+    private javax.swing.JTextField jTxtSite;
 
     /**
      * Creates new form MainGUI
@@ -116,11 +121,6 @@ public class MainGUI extends javax.swing.JFrame {
         });
 
         jButton4.setText("Edit or Delete an Officer");
-        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton4MouseClicked(evt);
-            }
-        });
 
         jButton5.setText("jButton1");
 
@@ -209,15 +209,6 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton2MouseClicked
 
-    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
-        try {
-            EditAnOfficer anOfficer = new EditAnOfficer();
-            anOfficer.setVisible(true);
-        } catch (SQLException ex) {
-            Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton4MouseClicked
-
     private void showOfficerEntries() throws SQLException {
         DBConnect conn = new DBConnect();
         Connection openConn = conn.openConnection();
@@ -225,22 +216,64 @@ public class MainGUI extends javax.swing.JFrame {
             Statement stmt = openConn.createStatement();
             String query = "SELECT * FROM tblcurrentvisits";
             ResultSet results = stmt.executeQuery(query);
-            System.out.println(results);
+            if (results.next() == false) {
+                System.out.println("No results");
+            } else {
+                do {
+                    System.out.println(results.getString(1));
+                    System.out.println(results.getString(2));
+                    System.out.println(results.getString(3));
+                    System.out.println(results.getRow());
+                    
+                                    
+                    javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+                    
+                    jTxtName = new javax.swing.JTextField();
+                    jTxtSite = new javax.swing.JTextField();
+                    jTxtTime = new javax.swing.JTextField();
+                    
+                    jTxtName.setText(results.getString(1));
+                    jTxtSite.setText(results.getString(2));
+                    jTxtTime.setText(results.getString(3));
+                    
+                    jPanel4Layout.setHorizontalGroup(
+                    jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(57 + (results.getRow()*100), 57 + (results.getRow()*100), 57 + (results.getRow()*100))
+                        .addComponent(jTxtName, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(46, 46, 46)
+                        .addComponent(jTxtSite, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35)
+                        .addComponent(jTxtTime, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                );
+                jPanel4Layout.setVerticalGroup(
+                    jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTxtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTxtSite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTxtTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(271, Short.MAX_VALUE))
+                );
+                    
+                    
+                   
+                } while (results.next());
+            }
             //int counter = 0;
-            while (results.next()) {
+//            while (results.next()) {
 //                    SiteEntry anOfficer = new SiteEntry();
 //                    anOfficer.setTxtName(results.getString(1));
 //                    anOfficer.setTxtSite(results.getString(2));
 //                    anOfficer.setTxtTimestamp(results.getString(3));
 //                    jPanel4.add(anOfficer);
-
-                JPanel p = new JPanel();
-                jPanel4.setLayout( new BorderLayout());
-                JLabel label = new JLabel("Enter Text");
-                jPanel4.add(label);
-                
-
-                }
+//                System.out.println(results.getString(1));
+//                
+//
+//                }
         } catch (SQLException ex) {
             Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
