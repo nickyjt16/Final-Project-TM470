@@ -6,26 +6,23 @@
 package GUI;
 
 import desktop.app.v2.DBConnect;
-import java.awt.BorderLayout;
-import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -35,9 +32,9 @@ public class MainGUI extends javax.swing.JFrame {
 
     Toolkit toolkit;
     Timer timer;
-    private javax.swing.JTextField jTxtTime;
-    private javax.swing.JTextField jTxtName;
-    private javax.swing.JTextField jTxtSite;
+    public Map<String, Object> txtName = new HashMap<>();
+    public Map<String, Object> txtSite = new HashMap<>();
+    public Map<String, Object> txtTime = new HashMap<>();
 
     /**
      * Creates new form MainGUI
@@ -50,19 +47,13 @@ public class MainGUI extends javax.swing.JFrame {
         timer.schedule(new RemindTask(),
                 0, //initial delay
                 20 * 1000);  //subsequent rate
-            }
-        
- 
-    class RemindTask extends TimerTask {
+    }  
 
+    class RemindTask extends TimerTask {
 
         @Override
         public void run() {
-            try {
-                showOfficerEntries();
-            } catch (SQLException ex) {
-                Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        loadTable();    
         }
     }
 
@@ -75,7 +66,6 @@ public class MainGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollBar1 = new javax.swing.JScrollBar();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
@@ -83,7 +73,9 @@ public class MainGUI extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblSiteVisits = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -92,7 +84,7 @@ public class MainGUI extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 741, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,6 +113,11 @@ public class MainGUI extends javax.swing.JFrame {
         });
 
         jButton4.setText("Edit or Delete an Officer");
+        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton4MouseClicked(evt);
+            }
+        });
 
         jButton5.setText("jButton1");
 
@@ -154,15 +151,32 @@ public class MainGUI extends javax.swing.JFrame {
                 .addGap(50, 50, 50))
         );
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        tblSiteVisits.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Name", "Site", "Time"
+            }
+        ));
+        tblSiteVisits.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(tblSiteVisits);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 741, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE))
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 314, Short.MAX_VALUE)
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 438, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -171,16 +185,17 @@ public class MainGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
 
         pack();
@@ -209,83 +224,37 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton2MouseClicked
 
-    private void showOfficerEntries() throws SQLException {
+    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+        try {
+            EditAnOfficer anOfficer = new EditAnOfficer();
+            anOfficer.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton4MouseClicked
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<SiteVisit> siteVisits() {
+        ArrayList<SiteVisit> siteVisits = new ArrayList<>();
         DBConnect conn = new DBConnect();
         Connection openConn = conn.openConnection();
         try {
             Statement stmt = openConn.createStatement();
             String query = "SELECT * FROM tblcurrentvisits";
             ResultSet results = stmt.executeQuery(query);
-            if (results.next() == false) {
-                System.out.println("No results");
-            } else {
-                do {
-                    System.out.println(results.getString(1));
-                    System.out.println(results.getString(2));
-                    System.out.println(results.getString(3));
-                    System.out.println(results.getRow());
-                    
-                                    
-                    javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-                    
-                    jTxtName = new javax.swing.JTextField();
-                    jTxtSite = new javax.swing.JTextField();
-                    jTxtTime = new javax.swing.JTextField();
-                    
-                    jTxtName.setText(results.getString(1));
-                    jTxtSite.setText(results.getString(2));
-                    jTxtTime.setText(results.getString(3));
-                    
-                    jPanel4Layout.setHorizontalGroup(
-                    jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(57 + (results.getRow()*100), 57 + (results.getRow()*100), 57 + (results.getRow()*100))
-                        .addComponent(jTxtName, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(46, 46, 46)
-                        .addComponent(jTxtSite, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(35, 35, 35)
-                        .addComponent(jTxtTime, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
-                jPanel4Layout.setVerticalGroup(
-                    jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTxtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTxtSite, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTxtTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(271, Short.MAX_VALUE))
-                );
-                    
-                    
-                   
-                } while (results.next());
+            SiteVisit siteVisit;
+            while (results.next()){
+                siteVisit = new SiteVisit(results.getString("name"), results.getString("site"), results.getString("timestamp"));
+                siteVisits.add(siteVisit);
             }
-            //int counter = 0;
-//            while (results.next()) {
-//                    SiteEntry anOfficer = new SiteEntry();
-//                    anOfficer.setTxtName(results.getString(1));
-//                    anOfficer.setTxtSite(results.getString(2));
-//                    anOfficer.setTxtTimestamp(results.getString(3));
-//                    jPanel4.add(anOfficer);
-//                System.out.println(results.getString(1));
-//                
-//
-//                }
-        } catch (SQLException ex) {
-            Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (openConn!=null){
-                openConn.close();
-            }   
+        } catch (SQLException e) {
+            System.out.println("Exception = " + e);
         }
-       
+        return siteVisits;
     }
-    
-    private BufferedImage image;
-
 
     /**
      * @param args the command line arguments
@@ -322,6 +291,19 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
     }
+    
+    public void loadTable() {
+        ArrayList<SiteVisit> list = siteVisits();
+        DefaultTableModel model = (DefaultTableModel)tblSiteVisits.getModel();
+        model.setRowCount(0);
+        Object[] row = new Object[3];
+        for (int i=0; i<list.size();i++) {
+            row[0] = list.get(i).getName();
+            row[1] = list.get(i).getSite();
+            row[2] = list.get(i).getTimestamp();
+            model.addRow(row);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -331,7 +313,8 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollBar jScrollBar1;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tblSiteVisits;
     // End of variables declaration//GEN-END:variables
 }
