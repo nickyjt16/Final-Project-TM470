@@ -27,6 +27,6 @@ class SiteVisit {
     }
     
     public String getTimestamp() {
-        return timestamp.substring(11);
+        return timestamp.substring(11, 16);
     }
 }

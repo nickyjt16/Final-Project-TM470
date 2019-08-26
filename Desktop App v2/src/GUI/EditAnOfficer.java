@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -59,7 +60,7 @@ public class EditAnOfficer extends javax.swing.JFrame {
         cmboManagerName = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Id Number:");
 
@@ -234,6 +235,7 @@ public class EditAnOfficer extends javax.swing.JFrame {
                String id = txtId.getText();
         String name = (String)cmboOfficerName.getSelectedItem();
         try {
+            if (JOptionPane.showConfirmDialog(null, "Are you sure you want to delete \"" + name + "\"?", "Delete", JOptionPane.YES_NO_OPTION) == 0) {
             this.deleteOfficer(id);
             txtEditOfficerOutcome.setText((String)name + " has been deleted, you may now\n"
                     + "edit/delete another officer or close this screen by clicking Return");
@@ -244,6 +246,7 @@ public class EditAnOfficer extends javax.swing.JFrame {
                 txtNextOfKin.setText("");
                 txtNextOfKinPhone.setText("");
                 cmboManagerName.setSelectedIndex(-1);
+            }
         } catch (SQLException ex) {
             Logger.getLogger(EditAnOfficer.class.getName()).log(Level.SEVERE, null, ex);
         }

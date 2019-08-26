@@ -65,7 +65,7 @@ public class AddAnOfficer extends javax.swing.JFrame {
         cmboManager = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Id Number:");
 

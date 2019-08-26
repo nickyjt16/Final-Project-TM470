@@ -7,12 +7,16 @@ package GUI;
 
 import desktop.app.v2.DBConnect;
 import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 import java.sql.Connection;
+import java.util.Date;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +25,8 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import javax.swing.JTable;
+import javax.swing.JOptionPane;
+import java.time.LocalDateTime;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -32,9 +37,6 @@ public class MainGUI extends javax.swing.JFrame {
 
     Toolkit toolkit;
     Timer timer;
-    public Map<String, Object> txtName = new HashMap<>();
-    public Map<String, Object> txtSite = new HashMap<>();
-    public Map<String, Object> txtTime = new HashMap<>();
 
     /**
      * Creates new form MainGUI
@@ -42,18 +44,22 @@ public class MainGUI extends javax.swing.JFrame {
     public MainGUI() {
         initComponents();
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-        
+
         timer = new Timer();
         timer.schedule(new RemindTask(),
                 0, //initial delay
                 20 * 1000);  //subsequent rate
-    }  
+    }
 
     class RemindTask extends TimerTask {
 
         @Override
         public void run() {
-        loadTable();    
+            try {
+                loadTable();
+            } catch (ParseException ex) {
+                Logger.getLogger(MainGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -67,6 +73,8 @@ public class MainGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jButton6 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -77,19 +85,45 @@ public class MainGUI extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblSiteVisits = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 48)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("NCC Lone Worker App");
+
+        jButton6.setText("Exit");
+        jButton6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton6MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 741, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton6))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 58, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jButton6))
+                .addContainerGap())
         );
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
         jButton1.setText("Add a Manager");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -119,7 +153,12 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setText("jButton1");
+        jButton5.setText("Delete Site");
+        jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton5MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -127,14 +166,14 @@ public class MainGUI extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -151,6 +190,10 @@ public class MainGUI extends javax.swing.JFrame {
                 .addGap(50, 50, 50))
         );
 
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+
+        jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
+
         tblSiteVisits.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -158,25 +201,35 @@ public class MainGUI extends javax.swing.JFrame {
             new String [] {
                 "Name", "Site", "Time"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblSiteVisits.setGridColor(new java.awt.Color(0, 0, 0));
         tblSiteVisits.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(tblSiteVisits);
+        if (tblSiteVisits.getColumnModel().getColumnCount() > 0) {
+            tblSiteVisits.getColumnModel().getColumn(0).setResizable(false);
+            tblSiteVisits.getColumnModel().getColumn(1).setResizable(false);
+            tblSiteVisits.getColumnModel().getColumn(2).setResizable(false);
+        }
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 741, Short.MAX_VALUE)
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE))
+            .addComponent(jScrollPane2)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 438, Short.MAX_VALUE)
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -193,9 +246,9 @@ public class MainGUI extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -233,6 +286,17 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton4MouseClicked
 
+    private void jButton6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MouseClicked
+       if (JOptionPane.showConfirmDialog(null ,"Are you sure you want to exit?", "Close this page", JOptionPane.YES_NO_OPTION)==0) {
+           System.exit(0);
+       }
+    }//GEN-LAST:event_jButton6MouseClicked
+
+    private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
+        DeleteSite aSite = new DeleteSite();
+        aSite.setVisible(true);
+    }//GEN-LAST:event_jButton5MouseClicked
+
     /**
      *
      * @return
@@ -243,10 +307,10 @@ public class MainGUI extends javax.swing.JFrame {
         Connection openConn = conn.openConnection();
         try {
             Statement stmt = openConn.createStatement();
-            String query = "SELECT * FROM tblcurrentvisits";
+            String query = "SELECT * FROM tblcurrentvisits ORDER BY timestamp ASC";
             ResultSet results = stmt.executeQuery(query);
             SiteVisit siteVisit;
-            while (results.next()){
+            while (results.next()) {
                 siteVisit = new SiteVisit(results.getString("name"), results.getString("site"), results.getString("timestamp"));
                 siteVisits.add(siteVisit);
             }
@@ -254,6 +318,10 @@ public class MainGUI extends javax.swing.JFrame {
             System.out.println("Exception = " + e);
         }
         return siteVisits;
+    }
+    
+    public void alertManager() {
+        
     }
 
     /**
@@ -291,17 +359,25 @@ public class MainGUI extends javax.swing.JFrame {
             }
         });
     }
-    
-    public void loadTable() {
+
+    public void loadTable() throws ParseException {
         ArrayList<SiteVisit> list = siteVisits();
-        DefaultTableModel model = (DefaultTableModel)tblSiteVisits.getModel();
+        DefaultTableModel model = (DefaultTableModel) tblSiteVisits.getModel();
         model.setRowCount(0);
         Object[] row = new Object[3];
-        for (int i=0; i<list.size();i++) {
+        for (int i = 0; i < list.size(); i++) {
             row[0] = list.get(i).getName();
             row[1] = list.get(i).getSite();
             row[2] = list.get(i).getTimestamp();
             model.addRow(row);
+            //Time aTest = (Time) row[2];
+            DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+            try{
+            Date d = dateFormat.parse(list.get(i).getTimestamp());
+            } catch (ParseException e) {
+                System.out.println("Error: " + e);
+            }
+            
         }
     }
 
@@ -311,6 +387,8 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -57,7 +58,7 @@ public class EditAManager extends javax.swing.JFrame {
         btnUpdate = new javax.swing.JButton();
         btnLoad = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Id Number:");
 
@@ -224,6 +225,7 @@ public class EditAManager extends javax.swing.JFrame {
         String name = (String)cmboManagerName.getSelectedItem();
         try {
             this.deleteManager(id);
+            if (JOptionPane.showConfirmDialog(null, "Are you sure you want to delete \"" + name + "\"?", "Delete", JOptionPane.YES_NO_OPTION) == 0) {
             txtEditManagerOutcome.setText((String)name + " has been deleted, you may now\n"
                     + "edit/delete another manager or close this screen by clicking Return");
                 txtId.setText("");
@@ -232,6 +234,7 @@ public class EditAManager extends javax.swing.JFrame {
                 txtCarReg.setText("");
                 txtNextOfKin.setText("");
                 txtNextOfKinPhone.setText("");
+            }
         } catch (SQLException ex) {
             Logger.getLogger(EditAManager.class.getName()).log(Level.SEVERE, null, ex);
         }
