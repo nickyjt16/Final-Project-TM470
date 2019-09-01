@@ -421,14 +421,17 @@ public class MainGUI extends javax.swing.JFrame {
               //I think it's showing all alerts here as adding an hour to the test time takes it past midnight, but does incrememnt the day.
               //in production this wont be an issue, but I'll need to testagain tomorrow
               
-              
-//            if (date2.before(remindTime)) {
-//                //configure alert here
-//                JOptionPane.showMessageDialog(null,
-//    row[0] + " hasn't checked in yet. Please consult a manager before continuing",
-//    "Missing Check In",
-//    JOptionPane.WARNING_MESSAGE);
-//            }
+              //date1 is the time they've checked in
+              //date2 is now
+              //remindTime is date1 + 1 hour
+            if (date2.after(remindTime)) {
+                //configure alert here
+                JOptionPane.showMessageDialog(null,
+    row[0] + " hasn't checked in yet. Please consult a manager before continuing",
+    "Missing Check In",
+    JOptionPane.WARNING_MESSAGE);
+                System.out.println("Reminder for " + row[0]);
+            }
             
         }
     }
