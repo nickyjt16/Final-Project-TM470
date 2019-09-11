@@ -30,21 +30,4 @@ public class DBConnect {
         return null;
     }
 
-    public static void closeConnection(ResultSet resultSet, Statement statement, Connection connection) {
-        try {
-            if (resultSet != null) {
-                resultSet.close();
-            }
-
-            if (statement != null) {
-                statement.close();
-            }
-
-            if (connection != null) {
-                connection.close();
-            }
-        } catch (Exception e) {
-            System.out.println("There was nothing to close");
-        }
-    }
 }
